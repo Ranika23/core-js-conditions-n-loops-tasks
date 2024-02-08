@@ -498,25 +498,34 @@ function rotateMatrix(matrix) {
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
 function sortByAsc(arr) {
-  const arrResult = arr;
-  let a = arrResult[0];
-  let b = arrResult[1];
-  let count = 0;
-  while (count > -1) {
-    for (let i = 0; i < arr.length; i += 1) {
-      if (a > b) {
-        arrResult[i] = b;
-        arrResult[i + 1] = a;
-        count += 1;
+  const array = arr;
+  const start1 = 0;
+  const end1 = arr.length - 1;
+  function separator(arr3, start, end) {
+    const num = arr[end];
+    let i = start;
+
+    for (let j = start; j <= end - 1; j += 1) {
+      if (arr3[j] <= num) {
+        [array[i], array[j]] = [arr3[j], arr3[i]];
+        i += 1;
       }
-      a = arrResult[i + 1];
-      b = arrResult[i + 2];
     }
-    if (count === 0) {
-      break;
-    }
-    count = 0;
+    [array[i], array[end]] = [arr3[end], arr3[i]];
+    return i;
   }
+
+  function arrSort(arr2, start, end) {
+    if (start < end) {
+      const sep = separator(arr2, start, end);
+
+      arrSort(arr2, start, sep - 1);
+      arrSort(arr2, sep + 1, end);
+    }
+  }
+
+  arrSort(array, start1, end1);
+
   return arr;
 }
 
@@ -537,8 +546,38 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let iter = iterations;
+  let res1 = '';
+  let res2 = '';
+  let result = str;
+  const cash = {};
+  const cash2 = {};
+  let countIter = 0;
+
+  while (iter > 0) {
+    for (let i = 0; i < result.length; i += 1) {
+      if (i % 2 === 0) {
+        res1 += result[i];
+      } else res2 += result[i];
+    }
+
+    result = res1 + res2;
+
+    iter -= 1;
+    res1 = '';
+    res2 = '';
+
+    if (cash[result] && str.length > 2) {
+      result = cash2[iterations % countIter];
+      break;
+    }
+    countIter += 1;
+    cash[result] = iterations - iter;
+    cash2[iterations - iter] = result;
+  }
+
+  return result;
 }
 
 /**
